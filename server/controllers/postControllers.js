@@ -12,6 +12,22 @@ export const getPosts = async (req, res, next) => {
     }
 };
 
+export const getPostsById = async (req, res, next) => {
+    try {
+        const { id: _id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(_id)) {
+            return res.status(404).json({ message: 'No post with that id or invalid id.' });
+        }
+
+        const post = await Post.findById(_id);
+
+        res.status(200).json({ post });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 export const addPost = async (req, res, next) => {
     try {
         const { body, title, image } = req.body;
