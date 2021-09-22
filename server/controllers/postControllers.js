@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+import { isValid } from "../helpers/isValidId.js";
+
 import Post from "../models/Post.js";
 
 export const getPosts = async (req, res, next) => {
@@ -16,9 +17,8 @@ export const getPostsById = async (req, res, next) => {
     try {
         const { id: _id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(_id)) {
-            return res.status(404).json({ message: 'No post with that id or invalid id.' });
-        }
+        // Check if the id is valid
+        isValid(_id, res);
 
         const post = await Post.findById(_id);
 
@@ -48,9 +48,7 @@ export const editPost = async (req, res, next) => {
         const post = req.body;
 
         // Check if the id is valid
-        if (!mongoose.Types.ObjectId.isValid(_id)) {
-            return res.status(404).json({ message: 'No post with that id or invalid id.' });
-        }
+        isValid(_id, res);
 
         const editedPost = await Post.findByIdAndUpdate(_id, post, { new: true });
 
@@ -65,9 +63,7 @@ export const deletePost = async (req, res, next) => {
         const { id: _id } = req.params;
 
         // Check if the id is valid
-        if (!mongoose.Types.ObjectId.isValid(_id)) {
-            return res.status(404).json({ message: 'Invalid ID.' });
-        }
+        isValid(_id, res);
 
         await Post.findByIdAndRemove(_id);
 
